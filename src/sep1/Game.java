@@ -2,8 +2,11 @@ package sep1;
 
 public class Game {
 	public StringBuffer board;
+	public final int NoMove = -1;
 
-	public Game(String s) {board = new StringBuffer(s);}
+	public Game(String s) {
+		board = new StringBuffer(s);
+	}
 
 	public Game(StringBuffer s, int position, char player) {
 		board = new StringBuffer();
@@ -12,38 +15,39 @@ public class Game {
 	}
 
 	public int move(char player) {
-		for (int i = 0; i < 9; i++) {
-			if (board.charAt(i) == '-') {
-				Game game = play(i, player);
-				if (game.winner() == player) 
-					return i;
+		for (int move = 0; move < 9; move++) {
+			if (isFieldEmpty(move)) {
+				Game game = play(move, player);
+				if (game.winner() == player)
+					return move;
 			}
 		}
 
-		for (int i = 0; i < 9; i++) {
-			if (board.charAt(i) == '-') 
-				return i;
-		}	
-		return -1;
+		for (int move = 0; move < 9; move++) {
+			if (isFieldEmpty(move))
+				return move;
+		}
+		return NoMove;
 	}
 
-	public Game play(int i, char player) {
-		return new Game(this.board, i, player);
+	public Game play(int move, char player) {
+		return new Game(this.board, move, player);
 	}
 
 	public char winner() {
-		if (board.charAt(0) != '-' 
-            && board.charAt(0) == board.charAt(1) 
-            && board.charAt(1) == board.charAt(2))
-			return board.charAt(0);
-		if (board.charAt(3) != '-' 
-            && board.charAt(3) == board.charAt(4) 
-            && board.charAt(4) == board.charAt(5))
-			return board.charAt(3);
-		if (board.charAt(6) != '-' 
-            && board.charAt(6) == board.charAt(7) 
-            && board.charAt(7) == board.charAt(8))
-			return board.charAt(6);
-		return '-';
+		char result = '-';
+		for(int zeile = 0;zeile<7;zeile+=3)
+		{
+			if (board.charAt(zeile) != '-' && board.charAt(zeile) == board.charAt(zeile+1) 
+		            && board.charAt(zeile+1) == board.charAt(zeile+2)){
+					result = board.charAt(zeile);
+			}
+		}
+		
+		return result;
+	}
+	
+	public boolean isFieldEmpty(int pos){
+		return (board.charAt(pos) == '-');
 	}
 }
